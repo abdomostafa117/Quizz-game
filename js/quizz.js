@@ -1,0 +1,172 @@
+type="module"
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyApE6uStJgmNqJFi7K1AvkUWDxPVUhmVIQ",
+      authDomain: "quizz-game-633ea.firebaseapp.com",
+      projectId: "quizz-game-633ea",
+      storageBucket: "quizz-game-633ea.firebasestorage.app",
+      messagingSenderId: "595850731411",
+      appId: "1:595850731411:web:14fd071e91d677b1491266",
+      measurementId: "G-B2L0T21JWQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let playerName = "";
+    let currentQuestion = 0;
+    let score = 0;
+
+    // كل الأسئلة
+    let allQuestions = [
+      { q: "لو عدّيت المتسابق التاني، تبقى في المركز الكام؟", options: ["الأول", "التاني", "التالت"], answer: "التاني" },
+      { q: "مزرعه فيها 14 خروف كلهم ماتو الا 9 اتبقي كام خروف ؟", options: ["5", "9", "8"], answer: "9" },
+      { q: "معاك عود كبريت واحد، ودخلت غرفة ضلمة فيها مصباح غاز وورق جرائد وخشب، هتولع اية ؟", options: [" الخشب ", "هولع الورق", "عود الكبريت"], answer: "عود الكبريت" },
+      { q: "لو معاك 6 تفاحات وأخذت 4 منها، كم تفاحة معك؟", options: ["6", "2", "4"], answer: "4" },
+      { q: "كم مرة يمكنك طرح الرقم 10 من الرقم 100؟", options: ["1", "10", "7"], answer: "1" },
+      { q: "أكبر عدد بين 45 و 54 هو؟", options: ["45", "54", "50"], answer: "54" },
+      { q: "شيء لونه أخضر في الأرض ولكنه أسود اللون في الأسواق وعند طهيه يكون أحمر اللون فما يكون؟", options: ["الفلفل", "الباذنجان", "الشاي"], answer: "الشاي" },
+      { q: "كم حلقة تشكل رمز الحلقات الأولمبية؟", options: ["6", "5", "4"], answer: "5" },
+      { q: "بلغ عمر أحمد نصف عمر أخته عندما كانت في السادسة من عمرها، فكم عمر أحمد عندما تبلغ أخته الأربعين؟", options: ["37", "33", "26"], answer: "37" },
+      { q: "إذا كان عمر سلمى ضعف عمر أخيها منذ أربع سنوات، والآن يبلغ عمر أخيها ثلاثة أرباع عمر سلمى، فكم عمرها؟ ", options: ["10", "12", "18"], answer: "12" },
+      { q: "إذا كان القطار الكهربي يسير في اتجاه الجنوب، فما يكون الاتجاه الذي يتجه فيه الدخان؟", options: ["لا شي مما سبق", "شمال", "جنوب","حسب اتجاة الرياح"], answer: "لا شي مما سبق" }, 
+      { q: "إذا كنت واقفًا في وسط السودان باتجاه الغرب ثم انعطفت يسارًا، فأي بلد تقع شمالًا؟", options: ["مصر", "ليبيا", "تشاد"], answer: "مصر" },
+      { q: "اين سيتم دفن الناجين لو سقطت الطائرة في الصحراء؟", options: ["الصحراء", "حسب مكان الطائره", "مش هيدفنو"], answer: "مش هيدفنو" },
+      { q: "ام خالد لديها 3 اولاد اسم الولد الاول خميس و الولد الثاني جمعه فما اسم الولد الثالث؟", options: ["سبت", "خالد", "اربع" , "محمد رمضان"], answer: "خالد" },
+      { q: "ماذا يكون امس اذا بقي علي يوم الاثنين يومان؟", options: ["السبت", " الاحد ", "الجمعة"], answer: "الجمعة" },
+      { q: "قبل اكتشاف قمة افرست ما هي القمة التي كانت اعلي في العالم؟", options: ["افرست", "مكنلي", "سانت كاترين"], answer: "افرست" },      
+    ];
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    // اختيار 10 أسئلة عشوائية
+    shuffleArray(allQuestions);
+    const questions = allQuestions.slice(0, 10);
+
+    document.getElementById("startBtn").addEventListener("click", startQuiz);
+
+    async function startQuiz() {
+      playerName = document.getElementById("playerName").value.trim();
+      if (!playerName) {
+        alert("ياعم اكتب اسمك الاول متتعبنيش");
+        return;
+      }
+
+      // التحقق من الاسم في Firebase
+      const querySnapshot = await getDocs(collection(db, "scores"));
+      let nameExists = false;
+      querySnapshot.forEach(doc => {
+        if (doc.data().name === playerName) nameExists = true;
+      });
+
+      if (nameExists) {
+        alert("الاسم دا موجود اختار اسم تاني.");
+        return;
+      }
+
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("quizScreen").style.display = "block";
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      if (currentQuestion >= questions.length) {
+        endQuiz();
+        return;
+      }
+      const q = questions[currentQuestion];
+      document.getElementById("questionText").textContent = q.q;
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => {
+          if (opt === q.answer) score++;
+          currentQuestion++;
+          loadQuestion();
+        };
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    async function endQuiz() {
+  document.getElementById("quizScreen").style.display = "none";
+  document.getElementById("resultScreen").style.display = "block";
+
+  const finalScoreEl = document.getElementById("finalScore");
+  finalScoreEl.textContent = `نتيجتك: ${score} من ${questions.length}`;
+  let commentBox = document.getElementById("commentBox");
+
+  if (score >= 0 && score <= 2) { 
+    finalScoreEl.style.color = "red";
+    commentBox.innerHTML = `<p style="font-size:20px;">قوليي انت عايش لييه </p><img src="img/4.WEBP" alt="😅" style="max-width:200px">`;
+  } else if (score >= 3 && score <= 4) { 
+    finalScoreEl.style.color = "red";
+    commentBox.innerHTML = `<p style="font-size:20px;">ياعم بقي حرام عليك نفسك </p><img src="img/2.WEBP" alt="😐" style="max-width:200px">`;
+  } else if (score >= 5 && score <= 6) { 
+    finalScoreEl.style.color = "orange";
+    commentBox.innerHTML = `<p style="font-size:20px;">انت كدا ناجح بالرافة مفيش امل فيك</p><img src="img/3.WEBP" alt="🎉" style="max-width:220px">`;
+  } else if (score >= 7 && score <= 9) { // 7 – 9 أخضر
+    finalScoreEl.style.color = "lightgreen";
+    commentBox.innerHTML = `<p style="font-size:20px;">هانت </p><img src="img/7.WEBP" alt="😉" style="max-width:250px">`;
+  } else if (score === 10) { // 10 أخضر داكن
+    finalScoreEl.style.color = "green";
+    commentBox.innerHTML = `<p style="font-size:20px;"> أنا مبسوط بيك</p><img src="img/1.WEBP" alt="😍" style="max-width:300px">`;
+  }
+
+  // حفظ النتيجة في Firebase
+  await addDoc(collection(db, "scores"), {
+    name: playerName,
+    score: score
+  });
+
+  // إعادة تحميل لوحة المتصدرين
+  loadLeaderboard("leaderboardListResult");
+}
+
+
+    async function loadLeaderboard(elementId = "leaderboardList") {
+      const querySnapshot = await getDocs(collection(db, "scores"));
+      let scores = [];
+      querySnapshot.forEach(doc => scores.push(doc.data()));
+      scores.sort((a, b) => b.score - a.score);
+
+      const list = document.getElementById(elementId);
+      list.innerHTML = "";
+      let half = Math.floor(questions.length / 2);
+
+      scores.forEach((s, index) => {
+        const row = document.createElement("div");
+        row.classList.add("player-row");
+        if (s.name === playerName) row.classList.add("highlight");
+
+        let color = "lightgreen";
+        if (s.score < half) color = "red";
+        else if (s.score === half) color = "orange";
+
+        row.innerHTML = `
+          <div class="rank">${index + 1}</div>
+          <div class="player-info" style="color:${color}">
+            <span>${s.name}</span>
+            <span>${s.score}</span>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    loadLeaderboard();
+    
+
+    function toggleMenu() {
+  const menu = document.getElementById("dropdownMenu");
+  menu.classList.toggle("show");
+}
