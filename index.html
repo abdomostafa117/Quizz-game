@@ -5,19 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Game</title>
   <link rel="stylesheet" href="css/quizz.css">
+  <style>
+  </style>
 </head>
 <body>
-  <!-- القائمة -->
-  <div class="menu-wrapper">
+    <!-- زر القائمة -->
+<div class="menu-wrapper">
     <div class="menu-icon" onclick="toggleMenu()">
       <div></div>
       <div></div>
       <div></div>
     </div>
-
+  
+    <!-- الشريط المنسدل -->
     <div class="dropdown-menu" id="dropdownMenu">
-      <a href="https://abdomostafa117.github.io/protofolio/"><button>Who I Am</button></a>
-      <a href="leave.html"><button>Contact Me</button></a>
+      <a href="https://abdomostafa117.github.io/protofolio/"><button onclick="whoIAm()">Who I Am</button></a>
+      <a href="leave.html"><button onclick="contactMe()">Contact Me</button></a>
     </div>
   </div>
 
@@ -29,14 +32,13 @@
     <div id="startScreen">
       <input type="text" id="playerName" placeholder="اكتب اسمك هنا وبلاش اسامي غريبه">
       <br>
-      <button id="startBtn">ابدأ</button>
+      <button id="startBtn">ابدأ </button>
 
       <div class="leaderboard">
-        <h2>Leaderboard 🏆</h2>
+        <h2>Leadboard 🏆</h2>
         <div id="leaderboardList"></div>
       </div>
     </div>
-
     <!-- شاشة الأسئلة -->
     <div id="quizScreen" style="display:none;">
       <div class="question-box">
@@ -44,18 +46,16 @@
         <div id="options"></div>
       </div>
     </div>
-
     <!-- شاشة النتيجة -->
     <div id="resultScreen" style="display:none;">
       <h2 id="finalScore"></h2>
       <div id="commentBox" class="comment-box"></div>
       <div class="leaderboard">
-        <h2>Leaderboard 🏆</h2>
+        <h2>Leadboard 🏆</h2>
         <div id="leaderboardListResult"></div>
       </div>
     </div>
   </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
@@ -77,6 +77,7 @@
     let currentQuestion = 0;
     let score = 0;
 
+    // كل الأسئلة
     let allQuestions = [
       { q: "لو عدّيت المتسابق التاني، تبقى في المركز الكام؟", options: ["الأول", "التاني", "التالت"], answer: "التاني" },
       { q: "مزرعه فيها 14 خروف كلهم ماتو الا 9 اتبقي كام خروف ؟", options: ["5", "9", "8"], answer: "9" },
@@ -87,13 +88,13 @@
       { q: "شيء لونه أخضر في الأرض ولكنه أسود اللون في الأسواق وعند طهيه يكون أحمر اللون فما يكون؟", options: ["الفلفل", "الباذنجان", "الشاي"], answer: "الشاي" },
       { q: "كم حلقة تشكل رمز الحلقات الأولمبية؟", options: ["6", "5", "4"], answer: "5" },
       { q: "بلغ عمر أحمد نصف عمر أخته عندما كانت في السادسة من عمرها، فكم عمر أحمد عندما تبلغ أخته الأربعين؟", options: ["37", "33", "26"], answer: "37" },
-      { q: "إذا كان عمر سلمى ضعف عمر أخيها منذ أربع سنوات، والآن يبلغ عمر أخيها ثلاثة أرباع عمر سلمى، فكم عمرها؟", options: ["10", "12", "18"], answer: "12" },
+      { q: "إذا كان عمر سلمى ضعف عمر أخيها منذ أربع سنوات، والآن يبلغ عمر أخيها ثلاثة أرباع عمر سلمى، فكم عمرها؟ ", options: ["10", "12", "18"], answer: "12" },
       { q: "إذا كان القطار الكهربي يسير في اتجاه الجنوب، فما يكون الاتجاه الذي يتجه فيه الدخان؟", options: ["لا شي مما سبق", "شمال", "جنوب","حسب اتجاة الرياح"], answer: "لا شي مما سبق" }, 
       { q: "إذا كنت واقفًا في وسط السودان باتجاه الغرب ثم انعطفت يسارًا، فأي بلد تقع شمالًا؟", options: ["مصر", "ليبيا", "تشاد"], answer: "مصر" },
       { q: "اين سيتم دفن الناجين لو سقطت الطائرة في الصحراء؟", options: ["الصحراء", "حسب مكان الطائره", "مش هيدفنو"], answer: "مش هيدفنو" },
       { q: "ام خالد لديها 3 اولاد اسم الولد الاول خميس و الولد الثاني جمعه فما اسم الولد الثالث؟", options: ["سبت", "خالد", "اربع" , "محمد رمضان"], answer: "خالد" },
-      { q: "ماذا يكون امس اذا بقي علي يوم الاثنين يومان؟", options: ["السبت", "الاحد", "الجمعة"], answer: "الجمعة" },
-      { q: "قبل اكتشاف قمة افرست ما هي القمة التي كانت اعلي في العالم؟", options: ["افرست", "مكنلي", "سانت كاترين"], answer: "افرست" },
+      { q: "ماذا يكون امس اذا بقي علي يوم الاثنين يومان؟", options: ["السبت", " الاحد ", "الجمعة"], answer: "الجمعة" },
+      { q: "قبل اكتشاف قمة افرست ما هي القمة التي كانت اعلي في العالم؟", options: ["افرست", "مكنلي", "سانت كاترين"], answer: "افرست" },      
     ];
 
     function shuffleArray(array) {
@@ -103,6 +104,7 @@
       }
     }
 
+    // اختيار 10 أسئلة عشوائية
     shuffleArray(allQuestions);
     const questions = allQuestions.slice(0, 10);
 
@@ -110,13 +112,22 @@
 
     async function startQuiz() {
       playerName = document.getElementById("playerName").value.trim();
-      if (!playerName) { alert("اكتب اسمك"); return; }
+      if (!playerName) {
+        alert("ياعم اكتب اسمك الاول متتعبنيش");
+        return;
+      }
 
+      // التحقق من الاسم في Firebase
       const querySnapshot = await getDocs(collection(db, "scores"));
       let nameExists = false;
-      querySnapshot.forEach(doc => { if (doc.data().name === playerName) nameExists = true; });
+      querySnapshot.forEach(doc => {
+        if (doc.data().name === playerName) nameExists = true;
+      });
 
-      if (nameExists) { alert("الاسم موجود اختر اسم تاني"); return; }
+      if (nameExists) {
+        alert("الاسم دا موجود اختار اسم تاني.");
+        return;
+      }
 
       document.getElementById("startScreen").style.display = "none";
       document.getElementById("quizScreen").style.display = "block";
@@ -124,7 +135,10 @@
     }
 
     function loadQuestion() {
-      if (currentQuestion >= questions.length) { endQuiz(); return; }
+      if (currentQuestion >= questions.length) {
+        endQuiz();
+        return;
+      }
       const q = questions[currentQuestion];
       document.getElementById("questionText").textContent = q.q;
       const optionsDiv = document.getElementById("options");
@@ -132,40 +146,48 @@
       q.options.forEach(opt => {
         const btn = document.createElement("button");
         btn.textContent = opt;
-        btn.onclick = () => { if (opt === q.answer) score++; currentQuestion++; loadQuestion(); };
+        btn.onclick = () => {
+          if (opt === q.answer) score++;
+          currentQuestion++;
+          loadQuestion();
+        };
         optionsDiv.appendChild(btn);
       });
     }
-
     async function endQuiz() {
-      document.getElementById("quizScreen").style.display = "none";
-      document.getElementById("resultScreen").style.display = "block";
+  document.getElementById("quizScreen").style.display = "none";
+  document.getElementById("resultScreen").style.display = "block";
 
-      const finalScoreEl = document.getElementById("finalScore");
-      finalScoreEl.textContent = `نتيجتك: ${score} من ${questions.length}`;
-      let commentBox = document.getElementById("commentBox");
+  const finalScoreEl = document.getElementById("finalScore");
+  finalScoreEl.textContent = `نتيجتك: ${score} من ${questions.length}`;
+  let commentBox = document.getElementById("commentBox");
 
-      if (score <= 2) {
-        finalScoreEl.style.color = "red";
-        commentBox.innerHTML = `<p>قوليي انت عايش لييه</p><img src="img/4.webp" alt="😅">`;
-      } else if (score <= 4) {
-        finalScoreEl.style.color = "red";
-        commentBox.innerHTML = `<p>ياعم بقي حرام عليك نفسك</p><img src="img/2.webp" alt="😐">`;
-      } else if (score <= 6) {
-        finalScoreEl.style.color = "orange";
-        commentBox.innerHTML = `<p>انت كدا ناجح بالرافة مفيش امل فيك</p><img src="img/3.webp" alt="🎉">`;
-      } else if (score <= 9) {
-        finalScoreEl.style.color = "lightgreen";
-        commentBox.innerHTML = `<p>هانت</p><img src="img/7.webp" alt="😉">`;
-      } else {
-        finalScoreEl.style.color = "green";
-        commentBox.innerHTML = `<p>أنا مبسوط بيك</p><img src="img/1.webp" alt="😍">`;
-      }
+  if (score >= 0 && score <= 2) { 
+    finalScoreEl.style.color = "red";
+    commentBox.innerHTML = `<p style="font-size:20px;">قوليي انت عايش لييه </p><img src="img/4.webp" alt="😅" style="max-width:200px">`;
+  } else if (score >= 3 && score <= 4) { 
+    finalScoreEl.style.color = "red";
+    commentBox.innerHTML = `<p style="font-size:20px;">ياعم بقي حرام عليك نفسك </p><img src="img/2.webp" alt="😐" style="max-width:200px">`;
+  } else if (score >= 5 && score <= 6) { 
+    finalScoreEl.style.color = "orange";
+    commentBox.innerHTML = `<p style="font-size:20px;">انت كدا ناجح بالرافة مفيش امل فيك</p><img src="img/3.webp" alt="🎉" style="max-width:220px">`;
+  } else if (score >= 7 && score <= 9) { // 7 – 9 أخضر
+    finalScoreEl.style.color = "lightgreen";
+    commentBox.innerHTML = `<p style="font-size:20px;">هانت </p><img src="img/7.webp" alt="😉" style="max-width:250px">`;
+  } else if (score === 10) { // 10 أخضر داكن
+    finalScoreEl.style.color = "green";
+    commentBox.innerHTML = `<p style="font-size:20px;"> أنا مبسوط بيك</p><img src="img/1.webp" alt="😍" style="max-width:300px">`;
+  }
 
-      await addDoc(collection(db, "scores"), { name: playerName, score: score });
-      loadLeaderboard("leaderboardListResult");
-    }
+  // حفظ النتيجة في Firebase
+  await addDoc(collection(db, "scores"), {
+    name: playerName,
+    score: score
+  });
 
+  // إعادة تحميل لوحة المتصدرين
+  loadLeaderboard("leaderboardListResult");
+}
     async function loadLeaderboard(elementId = "leaderboardList") {
       const querySnapshot = await getDocs(collection(db, "scores"));
       let scores = [];
@@ -197,14 +219,13 @@
     }
 
     loadLeaderboard();
-
   </script>
-
   <script>
     function toggleMenu() {
-      const menu = document.getElementById("dropdownMenu");
-      menu.classList.toggle("show");
-    }
+  const menu = document.getElementById("dropdownMenu");
+  menu.classList.toggle("show");
+}
   </script>
+  </body>
 </body>
 </html>
