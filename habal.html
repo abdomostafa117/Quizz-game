@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>اللعبة الذكية 😎</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap');
+
+:root{
+  --bg1:#2b244d; --bg2:#3a3f66;
+  --btn:#5865f2;
+  --white:#f2f2f2;
+  --red:#ff4d4d; --blue:#4d79ff; --green:#37b24d; --orange:#ff922b;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0; font-family:"Cairo",sans-serif;
+  background: linear-gradient(135deg, var(--bg1), var(--bg2));
+  color:var(--white);
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh; direction:rtl; padding:12px;
+}
+
+.container{
+  width:100%; max-width:520px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:18px; padding:22px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.55);
+  text-align:center; backdrop-filter: blur(6px);
+}
+
+.progress{ width:100%; height:6px; background: rgba(255,255,255,0.12); border-radius:6px; overflow:hidden; margin-bottom:18px;}
+.bar{ height:100%; width:0%; background: linear-gradient(90deg,var(--btn), #7289da); transition:width .45s ease; }
+
+h2{ margin:8px 0 18px 0; font-weight:700; font-size:1.25rem; color:white;}
+
+.images{ display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+.images img{ width:30%; border-radius:10px; border:2px solid transparent; cursor:pointer; transition:transform .18s, border-color .18s;}
+.images img:hover{ transform:scale(1.03); border-color: rgba(138,155,255,0.6); }
+
+#instruction{ font-size:1.05rem; margin-bottom:14px; color:var(--white); }
+#instruction span{ font-weight:700; padding:2px 8px; border-radius:6px; }
+
+#pressBtn{
+  display:inline-block; width:120px; height:120px; border-radius:50%; border:none;
+  background: linear-gradient(135deg,var(--btn), #7289da); color:var(--white);
+  font-size:1.2rem; cursor:pointer; box-shadow: 0 8px 18px rgba(71,82,196,0.18);
+}
+#pressBtn:active{ transform:translateY(1px); }
+
+.hidden{ display:none !important; }
+
+.q3-wrapper{ display:flex; flex-direction:column; align-items:center; gap:12px; }
+.q3-image{ width:80%; max-width:340px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); padding:8px; }
+.q3-controls{ display:flex; gap:10px; align-items:center; justify-content:center; margin-top:6px; }
+.num-box{ min-width:90px; background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:10px 14px; border-radius:10px; font-size:20px; font-weight:700; }
+.q-btn{ width:56px; height:56px; border-radius:12px; border:none; font-size:26px; cursor:pointer; background: linear-gradient(135deg,#5865f2,#4752c4); color:white; box-shadow: 0 8px 18px rgba(71,82,196,0.16); }
+.verify-btn{ margin-top:8px; padding:10px 20px; background: linear-gradient(135deg,#37b24d,#2f9e44); border:none; color:white; border-radius:10px; font-weight:700; cursor:pointer; }
+
+.color-stage{ display:flex; flex-direction:column; gap:14px; align-items:center; }
+.top-colors{ display:flex; justify-content:center; gap:6px; margin-bottom:10px; }
+.top-colors span{ padding:4px 10px; font-weight:700; color:white; border-radius:6px; background: rgba(255,255,255,0.05);}
+.color-row{ display:flex; justify-content:center; gap:12px; }
+.color-btn{
+  width:80px; height:80px; border-radius:50%; border:none; font-weight:700;
+  font-size:16px; cursor:pointer; color:white; transition:transform 0.2s;
+}
+.color-btn:hover{ transform:scale(1.1); }
+
+.number-stage{ position:relative; height:300px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); overflow:hidden; margin-bottom:12px; }
+.number-stage img{ position:absolute; width:60px; height:60px; object-fit:contain; }
+
+@media (max-width:420px){
+  .images img{ width:28%; }
+  #pressBtn{ width:100px; height:100px; font-size:1rem; }
+  .q3-image{ width:95%; }
+  .num-box{ min-width:80px; font-size:18px; }
+  .q-btn{ width:50px; height:50px; font-size:22px; }
+  .color-btn{ width:70px; height:70px; font-size:14px;}
+  .top-colors span{ font-size:14px; padding:3px 8px;}
+}
+.retry-btn
+{
+  padding: 15px 30px;
+  font-size: 18px;
+  background: #00c6ff;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+  margin-bottom: 20px;
+}
+
+</style>
+</head>
+<body>
+<div class="container" id="gameWrap">
+  <div class="progress"><div class="bar" id="progressBar"></div></div>
+
+  <!-- المرحلة 1 -->
+  <div id="stage1" class="stage">
+    <h2>اختار الصورة الأقدم </h2>
+    <div class="images">
+      <img src="img1/2.png" alt="صورة 1" onclick="selectImage(true)">
+      <img src="img1/1.png" alt="صورة 2" onclick="selectImage(false)">
+      <img src="img1/3.png" alt="صورة 3" onclick="selectImage(false)">
+    </div>
+  </div>
+
+  <!-- المرحلة 2 -->
+  <div id="stage2" class="stage hidden">
+    <div id="instruction">اضغط على الزر <span id="countText" style="color:white">سبع</span> مرات </div>
+    <button id="pressBtn" onclick="pressButton()">اضغط</button>
+  </div>
+
+  <!-- المرحلة 3 -->
+  <div id="stage3" class="stage hidden">
+    <h2>كم عدد المربعات في الشكل؟</h2>
+    <div class="q3-wrapper">
+      <div class="q3-image">
+        <img id="qImage" src="img1/5.png" alt="سؤال صورة" style="width:100%; border-radius:8px;">
+      </div>
+      <div class="q3-controls">
+        <button class="q-btn" onclick="decrement()">−</button>
+        <div class="num-box" id="answerBox">0</div>
+        <button class="q-btn" onclick="increment()">+</button>
+      </div>
+      <button class="verify-btn" onclick="verifyAnswer()">تحقق</button>
+    </div>
+  </div>
+
+  <!-- المرحلة 4 -->
+  <div id="stage4" class="stage hidden">
+    <h2>اضغط الألوان بالترتيب الصحيح</h2>
+    <div class="color-stage">
+      <div class="top-colors" id="topColors">
+        <span>أحمر</span><span>أخضر</span><span>برتقالي</span>
+        <span>أزرق</span><span>أخضر</span><span>برتقالي</span>
+      </div>
+      <div class="color-row" id="colorButtons"></div>
+    </div>
+  </div>
+
+  <!-- المرحلة 5 -->
+  <div id="stage5" class="stage hidden">
+    <div class="number-stage" id="numberStage"></div>
+
+    <div id="sumQuestion" class="hidden">
+      <h2>ما مجموع الأرقام الموجودة؟</h2>
+      <div class="q3-controls">
+        <button class="q-btn" onclick="decSum()">−</button>
+        <div class="num-box" id="sumAnswer">0</div>
+        <button class="q-btn" onclick="incSum()">+</button>
+      </div>
+      <button class="verify-btn" onclick="checkSumAnswer()">تحقق</button>
+    </div>
+  </div>
+
+  <!-- شاشة النجاح -->
+  <div id="successScreen" class="stage hidden">
+    <h2>🎉 إجابة صحيحة — ممتاز!</h2>
+    <p>كمل باقي اللعبة 😉</p>
+    <button class="retry-btn" onclick="goToMain()">ترتيبك</button>
+  </div>
+
+  <!-- شاشة الخسارة -->
+<div id="loseScreen" class="stage hidden" style="text-align:center; color:white;">
+  <h2 style="font-size:2rem; color:red;">خسرت يا عبيط</h2>
+  <p id="loseScore" style="font-size:1.2rem;"></p>
+  <button class="verify-btn" onclick="restartGame()">إعادة المحاولة</button>
+  <br><br>
+  <button class="retry-btn" onclick="goToMain()">ترتيبك</button>
+</div>
+
+
+<audio id="clickSound" src="sounds/click.mp3"></audio>
+<audio id="successSound" src="sounds/correct-19.mp3"></audio>
+<audio id="wrongSound" src="sounds/wrong.mp3"></audio>
+
+<script>
+  // الأصوات
+  const clickSound = document.getElementById('clickSound');
+  const successSound = document.getElementById('successSound');
+  const wrongSound = document.getElementById('wrongSound');
+  
+  // النتيجة
+  let score = 0;
+
+  // المرحلة 1
+  function selectImage(isCorrect){
+    if(isCorrect){
+      document.getElementById("stage1").classList.add("hidden");
+      document.getElementById("stage2").classList.remove("hidden");
+      document.getElementById("progressBar").style.width="25%";
+      successSound.currentTime=0; successSound.play();
+      score++;
+    } else showLose();
+  }
+
+  // المرحلة 2
+  let count = 0; let releaseTimer=null;
+  function pressButton(){
+    clearTimeout(releaseTimer);
+    count++;
+    clickSound.currentTime=0; clickSound.play();
+    const countText = document.getElementById('countText');
+    if(count >=6){ countText.textContent="ست"; countText.style.color="white"; }
+    releaseTimer=setTimeout(()=>evaluateCountAfterRelease(),2000);
+  }
+  function evaluateCountAfterRelease(){
+    const countText=document.getElementById('countText');
+    if(count===6){
+      document.getElementById("stage2").classList.add("hidden");
+      document.getElementById("stage3").classList.remove("hidden");
+      document.getElementById("progressBar").style.width="50%";
+      successSound.currentTime=0; successSound.play();
+      score++;
+      count=0; return;
+    }
+    if(count<5||count>6){
+      wrongSound.currentTime=0; wrongSound.play();
+      setTimeout(()=>showLose(),500);
+      return;
+    }
+  }
+
+  // المرحلة 3
+  let userValue=0;
+  const correctValue=16;
+  const answerBox=document.getElementById('answerBox');
+  function increment(){userValue++; renderAnswer(); clickSound.currentTime=0; clickSound.play();}
+  function decrement(){if(userValue>0) userValue--; renderAnswer(); clickSound.currentTime=0; clickSound.play();}
+  function renderAnswer(){answerBox.textContent=String(userValue);}
+  function verifyAnswer(){
+    if(userValue===correctValue){
+      successSound.currentTime=0; successSound.play();
+      score++;
+      document.getElementById('stage3').classList.add('hidden');
+      document.getElementById('stage4').classList.remove('hidden');
+      document.getElementById("progressBar").style.width="75%";
+      initStage4();
+    } else {
+      wrongSound.currentTime=0; wrongSound.play();
+      setTimeout(()=>showLose(),400);
+    }
+  }
+
+  // المرحلة 4
+  const colors = ["أحمر","أخضر","أزرق","برتقالي"];
+  let colorSequenceTop = ["أحمر","أخضر","برتقالي","أزرق","أخضر","برتقالي"];
+  let colorCodes = {"أحمر":"var(--red)","أخضر":"var(--green)","أزرق":"var(--blue)","برتقالي":"var(--orange)"};
+  let currentIndex=0;
+
+  function initStage4(){
+    const colorButtons=document.getElementById("colorButtons");
+    colorButtons.innerHTML='';
+    colors.forEach(c=>{
+      let btn=document.createElement('button');
+      btn.className='color-btn';
+      btn.style.backgroundColor=colorCodes[c];
+      btn.onclick=()=>checkColor(c);
+      colorButtons.appendChild(btn);
+    });
+  }
+
+  function checkColor(c){
+    document.getElementById("topColors").classList.add("hidden");
+
+    if (c === colorSequenceTop[currentIndex]) {
+      currentIndex++;
+      clickSound.currentTime = 0; clickSound.play();
+
+      if (currentIndex === colorSequenceTop.length) {
+        successSound.currentTime = 0; successSound.play();
+        document.getElementById("progressBar").style.width = "90%";
+        document.getElementById("stage4").classList.add("hidden");
+        document.getElementById("stage5").classList.remove("hidden");
+        score++;
+        initStage5();
+      }
+    } else {
+      wrongSound.currentTime = 0;
+      wrongSound.play();
+      showLose();
+    }
+  }
+
+  // المرحلة 5
+  let sumValue=0;
+  let startTime=0;
+  function initStage5(){
+    const container=document.getElementById("numberStage");
+    container.innerHTML='';
+    container.style.position = "relative";
+
+    startTime = performance.now();
+
+    for(let i=1; i<=4; i++){
+      const img=document.createElement('img');
+      img.src=`img1/num${i}.png`;
+      img.style.width="70px";
+      img.style.height="70px";
+      img.style.position="absolute";
+      img.style.top=Math.random()*180+"px";
+      img.style.left=Math.random()*400+"px";
+      container.appendChild(img);
+    }
+
+    setTimeout(()=>{
+      container.remove();
+      document.getElementById("sumQuestion").classList.remove("hidden");
+    },2000);
+  }
+
+  function incSum(){sumValue++; updateSum();}
+  function decSum(){if(sumValue>0) sumValue--; updateSum();}
+  function updateSum(){document.getElementById("sumAnswer").textContent=sumValue;}
+
+  function checkSumAnswer(){
+    if(sumValue===15){
+      successSound.currentTime=0; 
+      successSound.play();
+      document.getElementById("progressBar").style.width="100%";
+      score++;
+      let endTime = performance.now();
+      let timeTaken = ((endTime - startTime) / 1000).toFixed(1);
+      showFinalResult(timeTaken);
+    } else {
+      wrongSound.currentTime=0; 
+      wrongSound.play();
+      showLose();
+    }
+  }
+
+  // ** شاشة الخسارة + النتيجة الحالية **
+  function showLose(){
+    document.querySelectorAll('.stage').forEach(s => s.classList.add('hidden'));
+    document.getElementById('loseScore').textContent = `نتيجتك الحالية: ${score} / 5`;
+    document.getElementById('loseScreen').classList.remove('hidden');
+  }
+
+  function goToMain(){
+    window.location.href = "index.html"; // ضع هنا رابط اللعبة الأولى
+  }
+
+  // شاشة النتيجة النهائية بعد الفوز
+  function showFinalResult(timeTaken){
+    document.querySelectorAll('.stage').forEach(s=>s.classList.add('hidden'));
+    const resultScreen = document.createElement('div');
+    resultScreen.className = 'stage';
+    resultScreen.style.textAlign = 'center';
+    resultScreen.style.color = 'white';
+    resultScreen.innerHTML = `
+      <h2 style="font-size:2rem;">النتيجة</h2>
+      <p style="font-size:1.3rem;">نتيجتك هي <strong>${score}</strong> من 5</p>
+      <p style="font-size:1rem;">الوقت: ${timeTaken} ثانية</p>
+      <button class="verify-btn" onclick="restartGame()"> إعادة اللعب</button>
+      <button class="retry-btn" onclick="goToMain()">ترتيبك</button>
+    `;
+    document.getElementById('gameWrap').appendChild(resultScreen);
+  }
+
+  function restartGame(){
+    clearTimeout(releaseTimer);
+    count = 0;
+    userValue = 0;
+    sumValue = 0;
+    score = 0;
+    renderAnswer();
+    const countText = document.getElementById('countText');
+    countText.textContent = 'سبع';
+    countText.style.color = 'white';
+    document.querySelectorAll('.stage').forEach(s => s.classList.add('hidden'));
+    document.getElementById('stage1').classList.remove('hidden');
+    document.getElementById('progressBar').style.width = '0%';
+    document.getElementById('topColors').classList.remove('hidden');
+    currentIndex = 0;
+  }
+
+  renderAnswer();
+  updateSum();
+</script>
+  <!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyApE6uStJgmNqJFi7K1AvkUWDxPVUhmVIQ",
+    authDomain: "quizz-game-633ea.firebaseapp.com",
+    projectId: "quizz-game-633ea",
+    storageBucket: "quizz-game-633ea.firebasestorage.app",
+    messagingSenderId: "595850731411",
+    appId: "1:595850731411:web:14fd071e91d677b1491266",
+    measurementId: "G-B2L0T21JWQ"
+  };
+  
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  
+  window.updateScoreInFirebase = async function (playerName, newScore) {
+    try {
+      // بنبحث عن المستخدم في كولكشن scores
+      const q = query(collection(db, "scores"), where("name", "==", playerName));
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const oldScore = userDoc.data().score || 0;
+  
+        // هنضيف النتيجة الجديدة بالشكل المطلوب
+        const combinedScore = `${oldScore} ${newScore}+`;
+  
+        await updateDoc(doc(db, "scores", userDoc.id), {
+          score: combinedScore
+        });
+  
+        alert(`✅ تم حفظ النتيجة! نتيجتك الجديدة ${newScore} + القديمة ${oldScore}`);
+  
+        // نرجع على اللعبة الأولى (الـ Quiz)
+        window.location.href = "index.html";
+      } else {
+        alert("❌ اللاعب مش موجود في قاعدة البيانات.");
+      }
+    } catch (err) {
+      console.error("خطأ أثناء تحديث النتيجة:", err);
+    }
+  };
+  </script>  
+</body>
+</html>
