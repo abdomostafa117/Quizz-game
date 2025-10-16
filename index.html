@@ -95,6 +95,12 @@
         <div id="leaderboardListResult"></div>
       </div>
       <button id="refreshBtn">إعادة</button>
+      <button id="nextGameBtn">حسن درجتك</button>
+<script>
+document.getElementById("nextGameBtn").addEventListener("click", () => {
+  window.location.href = "habal.html";
+});
+</script>
     </div>
   </div>
 
@@ -223,21 +229,30 @@
       const commentBox = document.getElementById("commentBox");
 
       if (score >= 0 && score <= 2) { 
-        finalScoreEl.style.color = "red";
-        commentBox.innerHTML = `<p style="font-size:20px;">قوليي انت عايش لييه </p><img src="img/4.webp" alt="😅" style="max-width:200px">`;
-      } else if (score >= 3 && score <= 4) { 
-        finalScoreEl.style.color = "red";
-        commentBox.innerHTML = `<p style="font-size:20px;">ياعم بقي حرام عليك نفسك </p><img src="img/2.webp" alt="😐" style="max-width:200px">`;
-      } else if (score >= 5 && score <= 6) { 
-        finalScoreEl.style.color = "orange";
-        commentBox.innerHTML = `<p style="font-size:20px;">انت كدا ناجح بالرافة مفيش امل فيك</p><img src="img/3.webp" alt="🎉" style="max-width:220px">`;
-      } else if (score >= 7 && score <= 9) { 
-        finalScoreEl.style.color = "lightgreen";
-        commentBox.innerHTML = `<p style="font-size:20px;">هانت </p><img src="img/7.webp" alt="😉" style="max-width:250px">`;
-      } else if (score === 10) { 
-        finalScoreEl.style.color = "green";
-        commentBox.innerHTML = `<p style="font-size:20px;">أنا مبسوط بيك 👑</p><img src="img/1.webp" alt="😍" style="max-width:300px">`;
-      }
+      finalScoreEl.style.color = "red";
+      commentBox.innerHTML = `
+      <p style="font-size:20px;">انت محتاج تعمل نسخة</p>
+      <video src="videos/0.mp4" style="max-width:350px; border-radius:10px;" autoplay loop></video>`;
+    } else if (score >= 3 && score <= 4) { 
+      finalScoreEl.style.color = "lightred";
+      commentBox.innerHTML = `
+      <p style="font-size:20px;">قولي انت ازاي عايش كدا</p>
+      <video src="videos/2.mov" style="max-width:350px; border-radius:10px;" autoplay loop></video>`;
+    } else if (score >= 5 && score <= 6) { 
+      finalScoreEl.style.color = "orange";
+      commentBox.innerHTML = `
+      <p style="font-size:20px;">انت كدا ناجح بالرافة مفيش امل فيك</p>
+      <video src="videos/5.mp4" style="max-width:350px; border-radius:10px;" autoplay loop></video>`;
+     } else if (score >= 7 && score <= 9) { 
+      finalScoreEl.style.color = "green";
+      commentBox.innerHTML = `
+      <p style="font-size:20px;">في امل </p>
+      <video src="videos/8.mp4" style="max-width:350px; border-radius:10px;" autoplay loop></video>`;
+     } else if (score === 10) { 
+     finalScoreEl.style.color = "lightgreen";
+     commentBox.innerHTML = `<p style="font-size:20px;">أنا مبسوط بيك</p><video src="videos/10.mp4" style="max-width:350px; border-radius:10px;" autoplayloop></video>`;
+    }
+
 
       const deviceInfo = navigator.userAgent;
       const dateTime = new Date().toLocaleString();
