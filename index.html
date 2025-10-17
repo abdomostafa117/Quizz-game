@@ -313,7 +313,7 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
   const refreshBtn = document.getElementById("refreshBtn");
 
   if (score === 15) {
-    refreshBtn.textContent = "استلم الجايزة 🎁";
+    refreshBtn.textContent = "استلم الجايزة ";
     refreshBtn.style.backgroundColor = "green";
     refreshBtn.style.color = "white";
     refreshBtn.style.fontWeight = "bold";
@@ -321,7 +321,7 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
       window.location.href = "prize.html";
     };
   } else {
-    refreshBtn.textContent = "حسّن درجتك 🔁";
+    refreshBtn.textContent = "حسّن درجتك";
     refreshBtn.style.backgroundColor = "";
     refreshBtn.style.color = "";
     refreshBtn.onclick = () => {
@@ -372,4 +372,5 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
   </script>
 </body>
 </html>
+
 
