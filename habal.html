@@ -2,8 +2,8 @@
 <html lang="ar">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>اللعبة الذكية 😎</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>اختبار الهبل</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap');
 
@@ -432,5 +432,24 @@ h2{ margin:8px 0 18px 0; font-weight:700; font-size:1.25rem; color:white;}
     }
   };
   </script>  
+  <script>
+  // منع الزوم عند الضغط المتكرر أو اللمس المتعدد
+  document.addEventListener('touchstart', function (event) {
+    if (event.touches.length > 1) {
+      event.preventDefault();
+    }
+  }, { passive: false });
+
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function (event) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) { // لو ضغط مرتين بسرعة
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, false);
+</script>
+
 </body>
 </html>
+
