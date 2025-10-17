@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> الجايزة </title>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #2b244d, #3a3f66);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      padding: 15px 25px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 15px;
+      background: rgba(0,0,0,0.2);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    #nameForm { margin-top: 20px; }
+    #playerInput { padding: 12px; font-size: 1.2rem; border-radius: 10px; border: none; width: 220px; }
+    #submitName { padding: 12px 25px; font-size: 1.2rem; border-radius: 10px; border: none; cursor: pointer; background: #00c853; color: white; margin-left: 10px; }
+    #submitName:hover { background: #00e676; }
+
+    .boxes { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin-top: 30px; display: none; }
+
+    .box {
+      width: 120px;
+      height: 120px;
+      background: #6c63ff;
+      border-radius: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    }
+    .box:hover { transform: scale(1.1); background: #867df5; }
+    .box.revealed { background: #4CAF50; transform: scale(1.3); }
+
+    #result {
+      margin-top: 30px;
+      font-size: 2.2rem;
+      color: #ffea00;
+      padding: 15px 25px;
+      border-radius: 15px;
+      border: 3px solid rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.3);
+      display: none;
+    }
+
+    #backBtn {
+      margin-top: 40px;
+      padding: 12px 25px;
+      background: #00c853;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: none;
+      transition: 0.3s;
+    }
+    #backBtn:hover { background: #00e676; transform: scale(1.05); }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+<h1 id="greeting">اكتب اسمك لاستلام الجايزة</h1>
+<div id="nameForm">
+  <input type="text" id="playerInput" placeholder="اكتب اسمك هنا">
+  <button id="submitName">سجل</button>
+</div>
+
+<div class="boxes" id="boxesContainer"></div>
+<div id="result"></div>
+<button id="backBtn">العودة للصفحة الرئيسية</button>
+
+<audio id="prizeSound" src="sounds/khod.mp3"></audio>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyApE6uStJgmNqJFi7K1AvkUWDxPVUhmVIQ",
+  authDomain: "quizz-game-633ea.firebaseapp.com",
+  projectId: "quizz-game-633ea",
+  storageBucket: "quizz-game-633ea.firebasestorage.app",
+  messagingSenderId: "595850731411",
+  appId: "1:595850731411:web:14fd071e91d677b1491266",
+  measurementId: "G-B2L0T21JWQ"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const submitBtn = document.getElementById("submitName");
+const input = document.getElementById("playerInput");
+const greeting = document.getElementById("greeting");
+const boxesContainer = document.getElementById("boxesContainer");
+const result = document.getElementById("result");
+const backBtn = document.getElementById("backBtn");
+const prizeSound = document.getElementById("prizeSound");
+
+const prizes = [10, 20, 50, 100];
+let playerName = "";
+let prizeChosen = false;
+
+submitBtn.addEventListener("click", () => {
+  const name = input.value.trim();
+  if(!name){ alert("اكتب اسمك قبل المتابعة"); return; }
+  playerName = name;
+  greeting.textContent = `🎉 مبروك يا ${playerName}! 🎉`;
+  document.getElementById("nameForm").style.display = "none";
+  showBoxes();
+});
+
+function showBoxes() {
+  boxesContainer.style.display = "flex";
+  prizes.sort(() => Math.random() - 0.5);
+  prizes.forEach(num => {
+    const box = document.createElement("div");
+    box.classList.add("box");
+    box.innerHTML = `🎁`;
+    box.addEventListener("click", () => pickPrize(box, num));
+    boxesContainer.appendChild(box);
+  });
+}
+
+async function pickPrize(box, num) {
+  if(prizeChosen) return;
+  prizeChosen = true;
+
+  document.querySelectorAll(".box").forEach(b => b.style.pointerEvents = "none");
+
+  box.classList.add("revealed");
+  box.innerHTML = `<span>${num}</span>`;
+
+  result.textContent = `🎉 مبروك يا ${playerName}! كسبت معانا ${num} جنيه 🎉`;
+  result.style.display = "block";
+
+  prizeSound.play();
+  confettiEffect();
+  await savePrize(playerName, num);
+
+  setTimeout(() => { backBtn.style.display = "inline-block"; }, 1500);
+}
+
+async function savePrize(name, prize) {
+  const prizeRef = collection(db, "prize");
+  await addDoc(prizeRef, { name: name, prize: prize, datetime: new Date().toLocaleString() });
+}
+
+function confettiEffect() {
+  const duration = 2 * 1000;
+  const end = Date.now() + duration;
+  (function frame() {
+    const colors = ["#ff0", "#0f0", "#0ff", "#f0f", "#f00", "#00f"];
+    const conf = document.createElement("div");
+    conf.style.position = "fixed";
+    conf.style.top = Math.random() * 100 + "%";
+    conf.style.left = Math.random() * 100 + "%";
+    conf.style.width = "10px";
+    conf.style.height = "10px";
+    conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+    conf.style.borderRadius = "50%";
+    conf.style.opacity = 0.9;
+    conf.style.zIndex = 9999;
+    document.body.appendChild(conf);
+    setTimeout(() => conf.remove(), 1000);
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
+
+backBtn.addEventListener("click", () => { window.location.href = "index.html"; });
+</script>
+</body>
+</html>
