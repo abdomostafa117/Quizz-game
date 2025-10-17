@@ -3,6 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      touch-action: manipulation;
+      -ms-touch-action: manipulation;
+    }
+  </style>
+
+  <script>
+    if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      window.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+      }, { passive: false });
+
+      (function () {
+        let lastTouchTime = 0;
+        const MAX_DELAY = 300;
+        document.addEventListener('touchend', function (e) {
+          const now = Date.now();
+          const delta = now - lastTouchTime;
+          if (delta > 0 && delta <= MAX_DELAY) e.preventDefault();
+          lastTouchTime = now;
+        }, { passive: false });
+      })();
+    }
+  </script>
   <title>Quiz Game</title>
   <link rel="stylesheet" href="css/quizz.css">
   <style>
@@ -309,4 +334,5 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
   </script>
 </body>
 </html>
+
 
