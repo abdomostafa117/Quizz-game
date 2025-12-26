@@ -283,14 +283,17 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
         const row = document.createElement("div");
         row.classList.add("player-row");
         if (s.name === playerName) row.classList.add("highlight");
-let color;
-        if (s.score <= 5) {
+
+       let color;
+
+if (s.score <= 5) {
   color = "red";
 } else if (s.score <= 10) {
   color = "orange";
 } else {
   color = "lightgreen";
 }
+
 
         row.innerHTML = `
           <div class="rank">${index + 1}</div>
@@ -313,7 +316,3 @@ let color;
   </script>
 </body>
 </html>
-
-
-
-
