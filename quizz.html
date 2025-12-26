@@ -283,7 +283,7 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
         const row = document.createElement("div");
         row.classList.add("player-row");
         if (s.name === playerName) row.classList.add("highlight");
-
+let color;
         if (s.score <= 5) {
   color = "red";
 } else if (s.score <= 10) {
@@ -313,6 +313,7 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
   </script>
 </body>
 </html>
+
 
 
 
