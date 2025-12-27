@@ -126,6 +126,8 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
     let score = 0;
 
     let allQuestions = [
+      { q: "لو عدّيت المتسابق التاني، تبقي في المركز الكام؟", options: ["الأول", "التاني", "التالت"], answer: "التاني" },
+      { q: "لو عدوك حطلك سم قاتل فوري في الطعام وأكلته، هتعمل إيه معاه بعد ساعة؟", options: ["هتنتقم منه", "هتبلغ الشرطة", "أنا مش غبي"], answer: "أنا مش غبي" },
       { q: "إذا تم وضع 100 نعجة بكر في جزيرة نائية لا يوجد بها غير العشب والماء، فكم سيصبح لديهن من الخرفان بعد سنتين؟", options: ["200 خروف", "150 خروف", "100 خروف", "لست غبيًا"], answer: "لست غبيًا" },
       { q: "مجموعة من الرجال الصم ذهبوا في رحلة إلى الغابة ليسترحوا تحت شجرة كبيرة، فإذا زأر أسد بقوة وراء التل المجاور، ماذا سيفعلون؟", options: ["يهربوا من الغابة", "يتسلقوا الشجرة", "يظلوا مكانهم", "أنا مش غبي"], answer: "يظلوا مكانهم" },
       { q: "مزرعة فيها 14 خروف كلهم ماتوا إلا 9، اتبقى كام خروف؟", options: ["5", "9", "8"], answer: "9" },
@@ -133,17 +135,17 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
       { q: "قطع العداء السوداني مسافة الماراثون في ساعة و4 دقائق و5 ثواني، أما العداء الأمريكي فقطع نفس المسافة في ساعة و3 دقائق و70 ثانية، فأيهما الأسرع؟", options: ["العداء السوداني", "العداء الأمريكي", "لهما نفس السرعة", "أنا مش غبي"], answer: "العداء السوداني" },
       { q: "خلال سباق الماراثون، وقبل خط النهاية، إذا تجاوزت العداء الرابع فكم سيصبح ترتيبك بعد ذلك؟", options: ["الترتيب الثاني", "الترتيب الثالث", "الترتيب الرابع", "أنا مش غبي"], answer: "الترتيب الرابع" },
       { q: "ستة أرانب يلزمها ست دقائق كي تأكل ست جزرات، كم من الوقت يلزم ثلاث أرانب لأكل ثلاث جزرات؟", options: ["دقيقة واحدة", "3 دقائق", "6 دقائق", "أنا مش غبي"], answer: "6 دقائق" },
-      { q: "الأحد، الإثنين، الأربعاء، السبت، الأربعاء ما هو  اليوم التالي؟", options: ["الاحد", "الاثنين", "السبت"], answer: "الاثنين" },
-      { q: "استنتج اليوم التالي لبعد غد قبل 3 ايام من يوم الاثنين؟", options: ["الاثنين", "الثلاث", "الاربع","الجمعة"], answer: "الاثنين" },
+      { q: "معاك عود كبريت واحد، ودخلت غرفة ضلمة فيها مصباح غاز وورق جرائد وخشب، هتولع إيه؟", options: ["الخشب", "هولع الورق", "عود الكبريت"], answer: "عود الكبريت" },
+      { q: "لو معاك 6 تفاحات وأخذت 4 منها، كم تفاحة معك؟", options: ["6", "2", "4"], answer: "4" },
       { q: "كم مرة يمكنك طرح الرقم 10 من الرقم 100؟", options: ["1", "10", "7"], answer: "1" },
       { q: "أكبر عدد بين 45 و54 هو؟", options: ["45", "54", "50"], answer: "54" },
       { q: "شيء لونه أخضر في الأرض ولكنه أسود اللون في الأسواق وعند طهيه يكون أحمر اللون، فما هو؟", options: ["الفلفل", "الباذنجان", "الشاي"], answer: "الشاي" },
       { q: "كم حلقة تشكل رمز الحلقات الأولمبية؟", options: ["6", "5", "4"], answer: "5" },
-      { q: "بلغ عمر أحمد نصف عمر أخته عندما كانت في السادسة من عمرها، فكم عمر أحمد عندما تبلغ أخته الأربعين؟", options: ["37", "33", "26", "30"], answer: "37" },
+      { q: "بلغ عمر أحمد نصف عمر أخته عندما كانت في السادسة من عمرها، فكم عمر أحمد عندما تبلغ أخته الأربعين؟", options: ["37", "33", "26"], answer: "37" },
       { q: "إذا كان عمر سلمى ضعف عمر أخيها منذ أربع سنوات، والآن يبلغ عمر أخيها ثلاثة أرباع عمر سلمى، فكم عمرها؟", options: ["10", "12", "18"], answer: "12" },
-      { q: "احمد له 5 اخواة و كل واحد من اخوتة له اخت واحدة فكم عدد الاخوات كلهم؟", options: ["10", "6", "5", "7"], answer: "6" },
+      { q: "إذا كان القطار الكهربي يسير في اتجاه الجنوب، فما الاتجاه الذي يتجه فيه الدخان؟", options: ["لا شيء مما سبق", "شمال", "جنوب", "حسب اتجاه الرياح"], answer: "لا شيء مما سبق" },
       { q: "إذا كنت واقفًا في وسط السودان باتجاه الغرب ثم انعطفت يسارًا، فأي بلد تقع شمالًا؟", options: ["مصر", "ليبيا", "تشاد"], answer: "مصر" },
-      { q: "سالو فتاة من هذا الرجل قالت لهم ما لكم وما لي اخو زوجتة يكون خالي ,فمن هو ؟", options: ["ابوها", "عمها", "خالها","ابن خالها"], answer: "ابوها" },
+      { q: "أين سيتم دفن الناجين لو سقطت الطائرة في الصحراء؟", options: ["الصحراء", "حسب مكان الطائرة", "مش هيدفنو"], answer: "مش هيدفنو" },
       { q: "أم خالد لديها 3 أولاد: اسم الولد الأول خميس، والولد الثاني جمعة، فما اسم الولد الثالث؟", options: ["سبت", "خالد", "أربع", "محمد رمضان"], answer: "خالد" },
       { q: "ماذا يكون أمس إذا بقي على يوم الاثنين يومان؟", options: ["السبت", "الأحد", "الجمعة"], answer: "الجمعة" },
       { q: "قبل اكتشاف قمة إفرست، ما هي القمة التي كانت أعلى في العالم؟", options: ["إفرست", "مكنلي", "سانت كاترين"], answer: "إفرست" },
@@ -152,37 +154,7 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
       { q: "شوية أصحاب ماشيين مع بعض، أربعة قدام واحد منهم، وأربعة ورا واحد منهم، وواحد فيهم في النص، يبقوا كام واحد؟", options: ["5", "8", "9", "7"], answer: "5" },
       { q: "فيه 12 سمكة في الحوض، 3 ماتوا، 4 هربوا، كام فاضلين؟", options: ["7", "4", "12", "3"], answer: "12" },
       { q: "كام شهر في السنة عنده 28 يوم؟", options: ["1", "12", "2"], answer: "12" },
-      { q: "يبدأ أرنبان بالقفز في اتجاهين متعاكسين لمسافة مترين، قفز الأول في اتجاه اليسار 3 أمتار، ثم تحرك مترين آخرين. ما هي المسافة بينهما؟ ", options: ["4 متر", "6 متر", "12 متر", "2 متر"], answer: "6 متر" },
-      {
-        q: "كام مربع في الشكل ده؟",
-        img: "img1/5.png",
-        options: ["9", "10", "16", "17", "14"],
-        answer: "16"
-      },
-      {
-        q: "كم عدد الأشكال ذات الجوانب الأربعة في الشكل التالي؟",
-        img: "img1/7.jpg",
-        options: ["7", "6", "5", "4", "3"],
-        answer: "6"
-      },
-      {
-        q: "أي من هذه الأشكال أقل تشابهًا مع الأشكال الثلاثة الأخرى؟",
-        img: "img1/9.jpg",
-        options: ["a", "b", "c", "d"],
-        answer: "d"
-      },
-      {
-        q: "ما هو الشكل المناسب لمكان علامة الاستفهام؟",
-        img: "img1/b1.png",
-        options: ["a", "b", "c", "d"],
-        answer: "c"
-      },
-      {
-        q: "ما هو العدد الناقص؟",
-        img: "img1/8.gif",
-        options: ["6", "7", "5", "4","9"],
-        answer: "7"
-      },
+      { q: "أمامك ثلاثة أبواب وعليك أن تختار واحدًا منها للعبور من خلاله: الباب الأول تشتعل خلفه النار المتوهجة، الباب الثاني يقف خلفه رجل يحمل مسدسًا، الباب الثالث يقف خلفه أسد لم يتناول الطعام منذ ثلاث سنوات. فأي باب ستقوم بفتحه؟", options: ["الباب الأول", "الباب الثاني", "الباب الثالث", "مش عارف"], answer: "الباب الثالث" }
     ];
     let questions = [];
 
@@ -205,9 +177,6 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
     async function startQuiz() {
       playerName = document.getElementById("playerName").value.trim();
       if (!playerName) { alert("ياعم اكتب اسمك الاول متتعبنيش"); return; }
-      
-      // ✅ خزن الاسم للجايزة
-    localStorage.setItem("playerName", playerName);
 
       const querySnapshot = await getDocs(collection(db, "scores"));
       let nameExists = false;
@@ -228,26 +197,15 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
     }
 
     function loadQuestion() {
-      if (currentQuestion >= questions.length) { 
-        updateProgress(); 
-        endQuiz(); 
-        return; 
-      }
-    
+      if (currentQuestion >= questions.length) { updateProgress(); endQuiz(); return; }
+
       updateProgress();
-    
+
       const q = questions[currentQuestion];
-      const questionEl = document.getElementById("questionText");
-      questionEl.innerHTML = q.q;
-    
-      // ✅ لو السؤال فيه صورة، اعرضها
-      if (q.img) {
-        questionEl.innerHTML += `<br><img src="${q.img}" alt="صورة السؤال" style="max-width: 100%; margin-top: 10px; border-radius: 10px;">`;
-      }
-    
+      document.getElementById("questionText").textContent = q.q;
       const optionsDiv = document.getElementById("options");
       optionsDiv.innerHTML = "";
-    
+
       q.options.forEach(opt => {
         const btn = document.createElement("button");
         btn.textContent = opt;
@@ -261,74 +219,53 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
         optionsDiv.appendChild(btn);
       });
     }
-    
+
     async function endQuiz() {
-  document.getElementById("quizScreen").style.display = "none";
-  document.getElementById("resultScreen").style.display = "block";
+      document.getElementById("quizScreen").style.display = "none";
+      document.getElementById("resultScreen").style.display = "block";
 
-  const finalScoreEl = document.getElementById("finalScore");
-  finalScoreEl.textContent = `نتيجتك: ${score} من ${questions.length}`;
-  const commentBox = document.getElementById("commentBox");
+      const finalScoreEl = document.getElementById("finalScore");
+      finalScoreEl.textContent = `نتيجتك: ${score} من ${questions.length}`;
+      const commentBox = document.getElementById("commentBox");
 
-  if (score >= 0 && score <= 4) { 
-    finalScoreEl.style.color = "red";
-    commentBox.innerHTML = `
+      if (score >= 0 && score <= 2) { 
+      finalScoreEl.style.color = "red";
+      commentBox.innerHTML = `
       <p style="font-size:20px;">انت محتاج تعمل نسخة</p>
       <video src="videos/0.mp4" style="max-width:350px; border-radius:10px;" autoplay loop></video>`;
-  } else if (score >= 5 && score <= 7) { 
-    finalScoreEl.style.color = "lightred";
-    commentBox.innerHTML = `
+    } else if (score >= 3 && score <= 4) { 
+      finalScoreEl.style.color = "lightred";
+      commentBox.innerHTML = `
       <p style="font-size:20px;">قولي انت ازاي عايش كدا</p>
       <video src="videos/2.mp4" style="max-width:350px; border-radius:10px;" autoplay loop></video>`;
-  } else if (score >= 8 && score <= 11) { 
-    finalScoreEl.style.color = "orange";
-    commentBox.innerHTML = `
+    } else if (score >= 5 && score <= 6) { 
+      finalScoreEl.style.color = "orange";
+      commentBox.innerHTML = `
       <p style="font-size:20px;">انت كدا ناجح بالرافة مفيش امل فيك</p>
       <video src="videos/5.mp4" style="max-width:350px; border-radius:10px;" autoplay loop></video>`;
-  } else if (score >= 12 && score <= 14) { 
-    finalScoreEl.style.color = "green";
-    commentBox.innerHTML = `
+     } else if (score >= 7 && score <= 9) { 
+      finalScoreEl.style.color = "green";
+      commentBox.innerHTML = `
       <p style="font-size:20px;">في امل </p>
       <video src="videos/8.mp4" style="max-width:350px; border-radius:10px;" autoplay loop></video>`;
-  } else if (score === 15) { 
-    finalScoreEl.style.color = "lightgreen";
-    commentBox.innerHTML = `
-      <p style="font-size:20px;">أنا مبسوط بيك</p>
-      <video src="videos/10.mp4" style="max-width:350px; border-radius:10px;" autoplay loop></video>`;
-  }
+     } else if (score === 10) { 
+     finalScoreEl.style.color = "lightgreen";
+     commentBox.innerHTML = `<p style="font-size:20px;">أنا مبسوط بيك</p><video src="videos/10.mp4" style="max-width:350px; border-radius:10px;" autoplayloop></video>`;
+    }
 
-  const deviceInfo = navigator.userAgent;
-  const dateTime = new Date().toLocaleString();
 
-  await addDoc(collection(db, "scores"), {
-    name: playerName,
-    score: score,
-    datetime: dateTime,
-    device: deviceInfo
-  });
+      const deviceInfo = navigator.userAgent;
+      const dateTime = new Date().toLocaleString();
 
-  loadLeaderboard("leaderboardListResult");
+      await addDoc(collection(db, "scores"), {
+        name: playerName,
+        score: score,
+        datetime: dateTime,
+        device: deviceInfo
+      });
 
-  // ✅ هنا أضفنا الكود الجديد بتاع زر الجايزة أو الإعادة
-  const refreshBtn = document.getElementById("refreshBtn");
-
-  if (score === 15) {
-    refreshBtn.textContent = "استلم الجايزة ";
-    refreshBtn.style.backgroundColor = "green";
-    refreshBtn.style.color = "white";
-    refreshBtn.style.fontWeight = "bold";
-    refreshBtn.onclick = () => {
-      window.location.href = "prize.html";
-    };
-  } else {
-    refreshBtn.textContent = "حسّن درجتك";
-    refreshBtn.style.backgroundColor = "";
-    refreshBtn.style.color = "";
-    refreshBtn.onclick = () => {
-      location.reload();
-    };
-  }
-}
+      loadLeaderboard("leaderboardListResult");
+    }
 
     document.getElementById("refreshBtn").addEventListener("click", () => location.reload());
 
@@ -347,9 +284,16 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
         row.classList.add("player-row");
         if (s.name === playerName) row.classList.add("highlight");
 
-        let color = "lightgreen";
-        if (s.score < half) color = "red";
-        else if (s.score === half) color = "orange";
+       let color;
+
+      if (s.score <= 5) {
+      color = "red";
+      } else if (s.score <= 10) {
+      color = "orange";
+      } else {
+      color = "lightgreen";
+      }
+
 
         row.innerHTML = `
           <div class="rank">${index + 1}</div>
@@ -372,5 +316,3 @@ document.getElementById("nextGameBtn").addEventListener("click", () => {
   </script>
 </body>
 </html>
-
-
